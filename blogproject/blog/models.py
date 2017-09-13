@@ -28,6 +28,18 @@ class Post(models.Model):
 
     author = models.ForeignKey(User)
 
+    # 文章阅读量
+    views = models.PositiveIntegerField(default=0)
+
+    def increase_views(self):
+        self.views+=1
+        self.save(update_fields=['views'])
+
+    # 看不到的属性：comment_set
+
+    class Meta:
+        ordering = ['-created_time','-modified_time']
+
     def get_absolute_url(self):
         #使用reverse函数，生成一个url，例如 post / 1
         return reverse('blog:detail',kwargs={'pk':self.pk}) #
