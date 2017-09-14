@@ -7,6 +7,7 @@ from django.utils.html import strip_tags
 
 class Category(models.Model):
     name = models.CharField(max_length=64)
+    # annotate产生的隐藏属性：num_posts
 
     def __str__(self):
         return self.name
