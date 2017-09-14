@@ -1,7 +1,10 @@
 from django.shortcuts import render,get_object_or_404
-from .models import Post,Category
-from markdown import markdown
+from .models import Post,Category,Tag
+from markdown import markdown,Markdown
 from django.views.generic import ListView,DetailView
+
+from django.utils.text import slugify
+from markdown.extensions.toc import TocExtension
 
 from comment.forms import CommentForm
 from django.http import HttpResponse
@@ -123,11 +126,13 @@ class PostDetailView(DetailView):
 
     def get_object(self,queryset=None):
         post = super().get_object(queryset)
-        post.body = markdown(post.body,extensions=[
+        md = Markdown(extensions=[
             'markdown.extensions.extra',
             'markdown.extensions.codehilite',
-            'markdown.extensions.toc',
+            TocExtension(slugify=slugify),  # 把锚点修改为文章实际内容
         ])
+        post.body = md.convert(post.body)
+        post.toc = md.toc
         return post
 
     def get_context_data(self, **kwargs):
@@ -172,3 +177,8 @@ class CategoryView(IndexView):
         cate = get_object_or_404(Category,pk=self.kwargs.get('pk'))
         # 下面filter(category=cate)中的category是post.category
         return super().get_queryset().filter(category=cate)
+
+class TagView(IndexView):
+    def get_queryset(self):
+        tag = get_object_or_404(Tag,pk=self.kwargs.get('pk'))
+        return super().get_queryset().filter(tags=tag)
