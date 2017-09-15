@@ -21,5 +21,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'',include('blog.urls')), # 所有blog/urls.py里的路由都有前缀'blog/'
     url(r'',include('comment.urls')),
-    url(r'^all/rss/$',AllPostRssFeed(),name='rss')
+    url(r'^all/rss/$',AllPostRssFeed(),name='rss'),
+    url(r'search/',include('haystack.urls'))
 ]
