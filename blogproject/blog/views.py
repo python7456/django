@@ -194,3 +194,12 @@ def search(request):
 
     post_list = Post.objects.filter(Q(title__icontains=q)|Q(body__icontains=q))
     return render(request,'blog/index.html',{'post_list':post_list})
+
+# from .forms import PostForm
+# def write(request):
+#     if request.method == 'POST':
+#         form = PostForm(request.POST)
+#         if form.is_valid():
+#             post = form.save(commit=False)
+#             post.author = request.user
+#             form.save_m2m()
